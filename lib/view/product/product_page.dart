@@ -1,14 +1,32 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:navoiy_uy_joy/urls/Urls.dart';
 import 'package:navoiy_uy_joy/view/product/widgets/image_viewer.dart';
+import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 class ProductPage extends StatefulWidget {
-  const ProductPage({super.key});
-
+  const ProductPage({required this.id,super.key});
+  final int id;
   @override
   State<ProductPage> createState() => _ProductPageState();
 }
 
 class _ProductPageState extends State<ProductPage> {
+  bool loading=true;
+  Map<dynamic,dynamic> data={};
+  Future<void> getDataById(int id)async
+  {
+    var response = await http.get(Uri.parse("${Urls.announce}/$id"));
+    if(response.statusCode==200){
+      data = jsonDecode(response.body)["data"];
+      await Future.delayed(const Duration(seconds: 2));
+      setState(() {
+
+      loading=false;
+      });
+    }
+  }
   Future<void> _makePhoneCall(String phoneNumber) async {
     final Uri launchUri = Uri(
       scheme: 'tel',
@@ -24,10 +42,15 @@ class _ProductPageState extends State<ProductPage> {
     await launchUrl(launchUri);
   }
   @override
+  void initState() {
+  getDataById(widget.id);
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(""),actions: [IconButton(onPressed: (){}, icon: Icon(Icons.share))],),
-      body:  Column(
+      body:loading?const Center(child: CircularProgressIndicator(),):  Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
@@ -44,22 +67,28 @@ class _ProductPageState extends State<ProductPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text("Kecha 17:48 da"),
-                        Text("Maklersiz 2 xonali uy sotiladi oldaginalar bormi?",
+                        Text("${data["title"]}",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500
                         ),
                         ),
-                        Text("435 000 000 so'm",
+                        Text("${data["price"]} so'm",
+                        style: TextStyle(fontSize: 24,fontWeight: FontWeight.w900),
+                        ),
+                        Text("ID: ${widget.id}",
                         style: TextStyle(fontSize: 24,fontWeight: FontWeight.w900),
                         ),
                         details("Turar joy", "Yangi qurilgan uylar"),
-                        details("Xonalar soni", "2"),
-                        details("Yashash maydoni", "58 mkv"),
-                        details("Yashash maydoni", "58 mkv"),
-                        details("Yashash maydoni", "58 mkv"),
-                        details("Yashash maydoni", "58 mkv"),
-                        details("Yaqainiada yoylashgan", "Maktab uy joy brtk'asn tksadl ajkgd aksjdg asjkg sajdg akjsdf gaskhdf alo battar nimadi kimdir"),
+                        details("Xonalar soni", "${data["roomQuantity"]}"),
+                        details("Yashash maydoni", "${data["square"]} kv"),
+                        details("Qavatliligi", "${data["maxFloor"]} kv"),
+                        details("Oshxona maydoni", "${data["kitchenSquare"]} kv"),
+                        details("Qurilgan yili", "${data["year"]} kv"),
+                        details("Remonti", "${data["repair"]}"),
+                        details("Blandligi", "${data["height"]} m"),
+                        details("Kvartirada bor", "${data["flatHasThings"]} m"),
+                        details("Yaqainiada yoylashgan", "${data["description"]}"),
                       
                       ],
                     ),

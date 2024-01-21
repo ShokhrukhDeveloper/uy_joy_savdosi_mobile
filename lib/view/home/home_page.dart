@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:navoiy_uy_joy/urls/Urls.dart';
 import 'package:navoiy_uy_joy/view/product/product_page.dart';
 import 'widgets/home_item_widget.dart';
 class HomePage extends StatefulWidget {
@@ -7,19 +11,40 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 }
-
+List<dynamic> homes=[];
 class _HomePageState extends State<HomePage> {
   bool isSearch=false;
+  bool loading=false;
+  Future<void> getData()async{
+    loading=true;
+    setState(() {
+    });
+    var response = await http.get(Uri.parse(Urls.announce));
+    if(response.statusCode==200){
+      print(response.body);
+      await Future.delayed(Duration(seconds: 3));
+      homes=jsonDecode(response.body)["data"];
+      setState(() {
+        loading=false;
+      });
+    }
+  }
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const FlutterLogo(),
+        leading: IconButton(
+          icon: Icon(Icons.send),
+          onPressed: getData,
+        ),
         title:!isSearch?const Text("Navoiy uy joy"):
         TextField(
           onSubmitted: (text){
-            print(text);
-            print("---------------------------------------------------------------------------");
           },
           decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15.0),
@@ -76,7 +101,7 @@ class _HomePageState extends State<HomePage> {
           ),
 
           Container(
-            margin: EdgeInsets.only(right: 10),
+            margin: const EdgeInsets.only(right: 10),
             width: 40,
             height: 40,
             decoration: BoxDecoration(
@@ -89,9 +114,9 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: GridView.builder(
-          itemCount: 11,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        child: loading?const Center(child: CircularProgressIndicator(),): GridView.builder(
+          itemCount: homes.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10,
@@ -102,9 +127,9 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.white,
                 child: InkWell(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>const ProductPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> ProductPage(id: homes[index]["id"],)));
                     },
-                    child: HomeItemWidget()),
+                    child:  HomeItemWidget(data: homes[index],)),
               );
             }
         ),

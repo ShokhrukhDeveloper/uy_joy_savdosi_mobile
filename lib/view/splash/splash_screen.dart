@@ -25,7 +25,7 @@ class _SpalshScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return  Scaffold(
       backgroundColor: Colors.blueGrey.shade300,
-      body:Stack(
+      body:const Stack(
         children: [
           Align(
             alignment: Alignment.center,

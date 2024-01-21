@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 class HomeItemWidget extends StatelessWidget {
-  const HomeItemWidget({super.key});
-
+   HomeItemWidget({required this.data,super.key});
+  dynamic data;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -16,12 +16,12 @@ class HomeItemWidget extends StatelessWidget {
                   fit: BoxFit.cover,
               )),
         ),
-        Text("Macbook 14",
+        Text("${data["title"]}",
         style: TextStyle(fontWeight:FontWeight.w500,
           fontSize: 18
         ),
         ),
-        const Text("Rs 450,000",
+         Text("Narxi: ${data["price"]}",
         style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),
 
         ),
@@ -43,11 +43,11 @@ class HomeItemWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8)
 
               ),
-              child: const Text("10/10"),
+              child:  Text("${data["repair"]}"),
             ),
           ],
         ),
-        const Text("Gulper Phase 4, Lah...  "),
+         Text(" ${data["flatHasThings"]}"),
 
       ],
     );
