@@ -15,18 +15,30 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   bool loading=true;
   Map<dynamic,dynamic> data={};
+  List<String> images=[];
   Future<void> getDataById(int id)async
   {
     var response = await http.get(Uri.parse("${Urls.announce}/$id"));
     if(response.statusCode==200){
       data = jsonDecode(response.body)["data"];
-      await Future.delayed(const Duration(seconds: 2));
-      setState(() {
 
+      print(data["images"].runtimeType);
+      print("------------------------");
+      images=data["images"].map<String>((e) => e.toString()).toList();
+
+      // if(img is List)
+      //   {
+      //     print(img);
+      //     print("------------------------------------");
+      //   }
+
+      await Future.delayed(const Duration(seconds: 1));
+      setState(() {
       loading=false;
       });
     }
   }
+
   Future<void> _makePhoneCall(String phoneNumber) async {
     final Uri launchUri = Uri(
       scheme: 'tel',
@@ -34,6 +46,7 @@ class _ProductPageState extends State<ProductPage> {
     );
     await launchUrl(launchUri);
   }
+
   Future<void> _makePhoneSms(String phoneNumber) async {
     final Uri launchUri = Uri(
       scheme: 'sms',
@@ -41,6 +54,7 @@ class _ProductPageState extends State<ProductPage> {
     );
     await launchUrl(launchUri);
   }
+
   @override
   void initState() {
   getDataById(widget.id);
@@ -49,7 +63,7 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(""),actions: [IconButton(onPressed: (){}, icon: Icon(Icons.share))],),
+      appBar: AppBar(title: const Text(""),actions: [IconButton(onPressed: (){}, icon: const Icon(Icons.share))],),
       body:loading?const Center(child: CircularProgressIndicator(),):  Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -59,7 +73,7 @@ class _ProductPageState extends State<ProductPage> {
                 children: [
                   SizedBox(
                       height: 250,
-                      child: ImageViewer(),
+                      child: ImageViewer(imgList: images,),
                   ),
                   Container(
                     margin: EdgeInsets.all(10),
@@ -118,9 +132,9 @@ class _ProductPageState extends State<ProductPage> {
                 ),
               ) ),
               Expanded(child:InkWell(
-                onTap: (){
-                  _makePhoneSms("+998958882266");
-                },
+                onTap: ()=>
+                  _makePhoneSms("+998958882266")
+                ,
                 child: Container(
                   height: 60,
                   decoration: BoxDecoration(

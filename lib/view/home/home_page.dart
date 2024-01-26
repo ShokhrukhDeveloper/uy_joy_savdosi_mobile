@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
     loading=true;
     setState(() {
     });
-    var response = await http.get(Uri.parse(Urls.announce));
+    var response = await http.get(Uri.parse("${Urls.announce}?Limit=100&Page=1"));
     if(response.statusCode==200){
       print(response.body);
       await Future.delayed(Duration(seconds: 3));

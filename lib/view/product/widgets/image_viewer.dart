@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 class ImageViewer extends StatefulWidget {
-  const ImageViewer({super.key});
-
+  const ImageViewer({super.key, required this.imgList});
+  final List<String> imgList;
   @override
   State<ImageViewer> createState() => _ImageViewerState();
 }
@@ -19,7 +19,7 @@ class _ImageViewerState extends State<ImageViewer> {
                 SizedBox(
                   width:MediaQuery.of(context).size.width,
                   child: PageView.builder(
-                    itemCount: 4,
+                    itemCount: widget.imgList.length,
                       onPageChanged: (i){
                       index=i;
                       setState(() {
@@ -28,7 +28,7 @@ class _ImageViewerState extends State<ImageViewer> {
                       },
                     itemBuilder: (BuildContext context, int index) {
                         return Image(
-                          image: AssetImage("assets/images/image.jpg"),
+                          image: NetworkImage("http://liber.uz/files/${widget.imgList[index]}"),
                           fit: BoxFit.cover,);
 
                   },

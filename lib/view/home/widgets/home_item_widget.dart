@@ -11,8 +11,8 @@ class HomeItemWidget extends StatelessWidget {
           aspectRatio: 1.0,
           child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
-              child: const Image(
-                  image: AssetImage("assets/images/image.jpg"),
+              child:  Image(
+                  image: NetworkImage("http://liber.uz/files/"+data["photo"]),
                   fit: BoxFit.cover,
               )),
         ),
