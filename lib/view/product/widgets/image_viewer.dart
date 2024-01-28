@@ -38,14 +38,18 @@ class _ImageViewerState extends State<ImageViewer> {
                   alignment: Alignment.bottomCenter,
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        circle(0==index),
-                        circle(1==index),
-                        circle(2==index),
-                        circle(3==index),
-                      ],
+                    child: SizedBox(
+                      height: 30,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount:widget.imgList.length ,
+                          itemBuilder: (context,i)=>Row(
+                            children: [
+                              circle(index==i),
+                            ],
+                          )),
                     ),
                   ),
                 ),
