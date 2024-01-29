@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:navoiy_uy_joy/view/image_shower/image_shower.dart';
 
+import '../../../urls/Urls.dart';
+
 class ImageViewer extends StatefulWidget {
   const ImageViewer({super.key, required this.imgList});
   final List<String> imgList;
@@ -31,7 +33,7 @@ class _ImageViewerState extends State<ImageViewer> {
                         return InkWell(
                           onTap: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (c)=>ImageShower(url: "http://liber.uz/files/${widget.imgList[index]}"))),
                           child: Image(
-                            image: NetworkImage("http://liber.uz/files/${widget.imgList[index]}"),
+                            image: NetworkImage("${Urls.baseImageUrl}/${widget.imgList[index]}"),
                             fit: BoxFit.cover,),
                         );
 

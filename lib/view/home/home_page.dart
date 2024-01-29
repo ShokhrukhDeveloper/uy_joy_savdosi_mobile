@@ -15,23 +15,26 @@ List<dynamic> homes=[];
 class _HomePageState extends State<HomePage> {
   bool isSearch=false;
   bool loading=false;
-  Future<void> getData()async{
+  int limit=10;
+  int page=1;
+  Future<void> getData({required int page, required int limit})async{
     loading=true;
     setState(() {
     });
-    var response = await http.get(Uri.parse("${Urls.announce}?Limit=100&Page=1"));
+    var response = await http.get(Uri.parse("${Urls.announce}?Limit=$limit&Page=$page"));
     if(response.statusCode==200){
-      print(response.body);
-      await Future.delayed(Duration(seconds: 3));
       homes=jsonDecode(response.body)["data"];
       setState(() {
         loading=false;
       });
     }
   }
+  void more(){
+    getData(limit: limit,page: ++page);
+  }
   @override
   void initState() {
-    getData();
+    getData(limit: limit,page: page);
     super.initState();
   }
   @override
@@ -40,7 +43,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.send),
-          onPressed: getData,
+          onPressed: (){},
         ),
         title:!isSearch?const Text("Navoiy uy joy"):
         TextField(
@@ -51,12 +54,12 @@ class _HomePageState extends State<HomePage> {
             border: OutlineInputBorder(
               gapPadding: 0,
               borderRadius: BorderRadius.circular(15),
-              borderSide: BorderSide(color: Colors.white38)
+              borderSide: const BorderSide(color: Colors.white38)
             ),
             focusedBorder: OutlineInputBorder(
                 gapPadding: 0,
                 borderRadius: BorderRadius.circular(15),
-                borderSide: BorderSide(color: Colors.black26)
+                borderSide: const BorderSide(color: Colors.black26)
             ),
           ),
         ),
@@ -71,32 +74,30 @@ class _HomePageState extends State<HomePage> {
               });
             },
             child: Container(
-              margin: EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.only(right: 10),
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                border: Border.all(color: Color(0xffE2E8F0),width: 2),
+                border: Border.all(color: const Color(0xffE2E8F0),width: 2),
                 borderRadius: BorderRadius.circular(8)
               ),
-              child: Icon(Icons.search_rounded),
+              child: const Icon(Icons.search_rounded),
             ),
           ),
           if(isSearch)InkWell(
             onTap: (){
               isSearch=false;
-              setState(() {
-
-              });
+              setState(() {});
             },
             child: Container(
-              margin: EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.only(right: 10),
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                  border: Border.all(color: Color(0xffE2E8F0),width: 2),
+                  border: Border.all(color: const Color(0xffE2E8F0),width: 2),
                   borderRadius: BorderRadius.circular(8)
               ),
-              child: Icon(Icons.clear),
+              child: const Icon(Icons.clear),
             ),
           ),
 
@@ -108,7 +109,7 @@ class _HomePageState extends State<HomePage> {
               border: Border.all(color: Color(0xffE2E8F0),width: 2),
               borderRadius: BorderRadius.circular(8)
             ),
-            child: Icon(Icons.favorite_border),
+            child: const Icon(Icons.favorite_border),
           ),
         ],
       ),

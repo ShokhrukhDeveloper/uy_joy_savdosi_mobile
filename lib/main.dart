@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:navoiy_uy_joy/view/home/home_page.dart';
 import 'package:navoiy_uy_joy/view/splash/splash_screen.dart';
 
 void main() {
