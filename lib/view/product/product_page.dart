@@ -5,8 +5,9 @@ import 'package:navoiy_uy_joy/urls/Urls.dart';
 import 'package:navoiy_uy_joy/view/product/widgets/image_viewer.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+
 class ProductPage extends StatefulWidget {
-  const ProductPage({required this.id,super.key});
+  const ProductPage({required this.id, super.key});
   final int id;
   @override
   State<ProductPage> createState() => _ProductPageState();
