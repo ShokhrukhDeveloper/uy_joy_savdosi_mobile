@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navoiy_uy_joy/urls/Urls.dart';
 class HomeItemWidget extends StatelessWidget {
    HomeItemWidget({required this.data,super.key});
   dynamic data;
@@ -12,7 +13,7 @@ class HomeItemWidget extends StatelessWidget {
           child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
               child:  Image(
-                  image: NetworkImage("http://liber.uz/files/"+data["photo"]),
+                  image: NetworkImage("${Urls.baseUrlImage}/${data["photo"]}"),
                   fit: BoxFit.cover,
               )),
         ),
