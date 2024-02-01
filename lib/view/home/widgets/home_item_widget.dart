@@ -13,7 +13,7 @@ class HomeItemWidget extends StatelessWidget {
           child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
               child:  Image(
-                  image: NetworkImage("${Urls.baseUrlImage}/${data["photo"]}"),
+                  image: NetworkImage("${Urls.baseImageUrl}/${data["photo"]}"),
                   fit: BoxFit.cover,
               )),
         ),

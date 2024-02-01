@@ -14,11 +14,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   List<dynamic> homes = [];
   bool isSearch = false;
+  bool last=false;
   bool loading = false;
   static const limit = 10;
+  int page = 1;
   Future<void> getData(int page) async {
     loading = true;
     setState(() {});
@@ -28,18 +29,35 @@ class _HomePageState extends State<HomePage> {
     if (response.statusCode == 200) {
       print(response.body);
       await Future.delayed(const Duration(seconds: 3));
-      homes = jsonDecode(response.body)["data"];
+      if(homes.isEmpty&&!last) {
+        homes = jsonDecode(response.body)["data"];
 
+      } else if(!last){
+        var items=jsonDecode(response.body)["data"] as List;
+        homes.add(items);
+        if(items.length<limit)
+          {
+            last=true;
+          }
+      }
       setState(() {
         loading = false;
       });
     }
   }
-
+  late ScrollController _scrollController;
   @override
   void initState() {
+    _scrollController=ScrollController();
+    _scrollController.addListener(() {
+      if(_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent){
+        page++;
+        if(!last)getData(page);
+      }
+    });
 
-
+    getData(1);
     super.initState();
   }
 
@@ -48,69 +66,62 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.send),
-
-          onPressed: (){},
+          icon: const Icon(Icons.send),
+          onPressed: () {},
         ),
-        title:!isSearch?const Text("Navoiy uy joy"):
-        TextField(
-          onSubmitted: (text){
-          },
-          decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15.0),
-            border: OutlineInputBorder(
-              gapPadding: 0,
-              borderRadius: BorderRadius.circular(15),
-              borderSide: const BorderSide(color: Colors.white38)
-            ),
-            focusedBorder: OutlineInputBorder(
-                gapPadding: 0,
-                borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(color: Colors.black26)
-            ),
-          ),
-
-
-        ),
-
+        title: !isSearch
+            ? const Text("Navoiy uy joy")
+            : TextField(
+                onSubmitted: (text) {},
+                decoration: InputDecoration(
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 15.0),
+                  border: OutlineInputBorder(
+                      gapPadding: 0,
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(color: Colors.white38)),
+                  focusedBorder: OutlineInputBorder(
+                      gapPadding: 0,
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(color: Colors.black26)),
+                ),
+              ),
         centerTitle: true,
         actions: [
-
-          if(!isSearch)InkWell(
-            onTap: (){
-              isSearch=true;
-              setState(() {
-
-              });
-            },
-            child: Container(
-              margin: const EdgeInsets.only(right: 10),
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xffE2E8F0),width: 2),
-                borderRadius: BorderRadius.circular(8)
+          if (!isSearch)
+            InkWell(
+              onTap: () {
+                isSearch = true;
+                setState(() {});
+              },
+              child: Container(
+                margin: const EdgeInsets.only(right: 10),
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                    border:
+                        Border.all(color: const Color(0xffE2E8F0), width: 2),
+                    borderRadius: BorderRadius.circular(8)),
+                child: const Icon(Icons.search_rounded),
               ),
-              child: const Icon(Icons.search_rounded),
             ),
-          ),
-          if(isSearch)InkWell(
-            onTap: (){
-              isSearch=false;
-              setState(() {});
-            },
-            child: Container(
-              margin: const EdgeInsets.only(right: 10),
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xffE2E8F0),width: 2),
-                  borderRadius: BorderRadius.circular(8)
+          if (isSearch)
+            InkWell(
+              onTap: () {
+                isSearch = false;
+                setState(() {});
+              },
+              child: Container(
+                margin: const EdgeInsets.only(right: 10),
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                    border:
+                        Border.all(color: const Color(0xffE2E8F0), width: 2),
+                    borderRadius: BorderRadius.circular(8)),
+                child: const Icon(Icons.clear),
               ),
-              child: const Icon(Icons.clear),
-
-            ),)
-
+            )
         ],
       ),
       body: Padding(
@@ -120,6 +131,7 @@ class _HomePageState extends State<HomePage> {
                 child: CircularProgressIndicator(),
               )
             : GridView.builder(
+              controller: _scrollController,
                 itemCount: homes.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
@@ -146,6 +158,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-
 }
