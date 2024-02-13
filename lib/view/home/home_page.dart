@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:navoiy_uy_joy/urls/Urls.dart';
 import 'package:navoiy_uy_joy/view/product/product_page.dart';
+import '../../Models/AnnouncementList.dart';
 import 'widgets/home_item_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,7 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<dynamic> homes = [];
+  AnnouncementList? homes ;
   bool isSearch = false;
   bool last=false;
   bool loading = false;
@@ -23,29 +25,19 @@ class _HomePageState extends State<HomePage> {
   Future<void> getData(int page) async {
     loading = true;
     setState(() {});
-    var response =
-        await http.get(Uri.parse("${Urls.announce}?Limit=$limit&Page=$page"));
-
+    var response = await http.get(Uri.parse("${Urls.announce}?Limit=$limit&Page=$page"));
     if (response.statusCode == 200) {
       print(response.body);
       await Future.delayed(const Duration(seconds: 3));
-      if(homes.isEmpty&&!last) {
-        homes = jsonDecode(response.body)["data"];
 
-      } else if(!last){
-        var items=jsonDecode(response.body)["data"] as List;
-        homes.add(items);
-        if(items.length<limit)
-          {
-            last=true;
-          }
-      }
+        homes = AnnouncementList.fromJson(jsonDecode(response.body));
       setState(() {
         loading = false;
       });
     }
   }
   late ScrollController _scrollController;
+
   @override
   void initState() {
     _scrollController=ScrollController();
@@ -132,7 +124,7 @@ class _HomePageState extends State<HomePage> {
               )
             : GridView.builder(
               controller: _scrollController,
-                itemCount: homes.length,
+                itemCount: homes?.announcement.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: 10,
@@ -147,11 +139,11 @@ class _HomePageState extends State<HomePage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ProductPage(
-                                        id: homes[index]["id"],
+                                        id: homes!.announcement[index].id.toInt(),
                                       )));
                         },
                         child: HomeItemWidget(
-                          data: homes[index],
+                          data: homes!.announcement[index],
                         )),
                   );
                 }),

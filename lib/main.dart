@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:navoiy_uy_joy/urls/http_overrides.dart';
 import 'package:navoiy_uy_joy/view/splash/splash_screen.dart';
 
 void main() {
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }
 

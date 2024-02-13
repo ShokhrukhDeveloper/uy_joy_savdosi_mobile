@@ -27,11 +27,6 @@ class _ProductPageState extends State<ProductPage> {
       print("------------------------");
       images=data["images"].map<String>((e) => e.toString()).toList();
 
-      // if(img is List)
-      //   {
-      //     print(img);
-      //     print("------------------------------------");
-      //   }
 
       await Future.delayed(const Duration(seconds: 1));
       setState(() {

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:navoiy_uy_joy/urls/Urls.dart';
+
+import '../../../Models/AnnouncementList.dart';
+
 class HomeItemWidget extends StatelessWidget {
    HomeItemWidget({required this.data,super.key});
-  dynamic data;
+   Announcement data;
+   final oCcy = NumberFormat("#,##0", "uz_UZ");
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -13,43 +18,28 @@ class HomeItemWidget extends StatelessWidget {
           child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
               child:  Image(
-                  image: NetworkImage("${Urls.baseImageUrl}/${data["photo"]}"),
+                  image: NetworkImage("${Urls.baseImageUrl}/${data.photo}"),
                   fit: BoxFit.cover,
               )),
         ),
-        Text("${data["title"]}",
-        style: TextStyle(fontWeight:FontWeight.w500,
+        Text("${data.title}",
+        style: const TextStyle(fontWeight:FontWeight.w500,
           fontSize: 18
         ),
+          maxLines: 2,
         ),
-         Text("Narxi: ${data["price"]}",
-        style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),
-
+        Text(oCcy.format(data.price),
+        style: const TextStyle(fontSize: 22,fontWeight: FontWeight.bold),
         ),
-        Row(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(right: 4),
-              padding: const EdgeInsets.symmetric(vertical: 3,horizontal: 2),
-              decoration: BoxDecoration(
-                  color: Color(0xffEFEFEF),
-                borderRadius: BorderRadius.circular(8)
-              ),
-              child: const Text("New"),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 3,horizontal: 2),
-              decoration: BoxDecoration(
-                color: Color(0xffEFEFEF),
-                borderRadius: BorderRadius.circular(8)
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 5,horizontal: 8),
+          decoration: BoxDecoration(
+              color: Color(0xffEFEFEF),
+              borderRadius: BorderRadius.circular(8)
 
-              ),
-              child:  Text("${data["repair"]}"),
-            ),
-          ],
+          ),
+          child:  Text("${data.totalSpace} m\u00b2"),
         ),
-         Text(" ${data["flatHasThings"]}"),
-
       ],
     );
   }
