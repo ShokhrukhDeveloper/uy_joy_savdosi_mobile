@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:navoiy_uy_joy/urls/Urls.dart';
 
-import '../../../Models/AnnouncementList.dart';
+import '../../../Models/announcement_list.dart';
 
 class HomeItemWidget extends StatelessWidget {
    HomeItemWidget({required this.data,super.key});

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:navoiy_uy_joy/urls/Urls.dart';
 import 'package:navoiy_uy_joy/view/product/product_page.dart';
-import '../../Models/AnnouncementList.dart';
+import '../../Models/announcement_list.dart';
 import 'widgets/home_item_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -29,7 +29,6 @@ class _HomePageState extends State<HomePage> {
     print(response.statusCode);
     print(response.body);
     if (response.statusCode == 200) {
-
       await Future.delayed(const Duration(seconds: 3));
 
         homes = AnnouncementList.fromJson(jsonDecode(response.body));
