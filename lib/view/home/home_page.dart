@@ -26,8 +26,10 @@ class _HomePageState extends State<HomePage> {
     loading = true;
     setState(() {});
     var response = await http.get(Uri.parse("${Urls.announce}?Limit=$limit&Page=$page"));
+    print(response.statusCode);
+    print(response.body);
     if (response.statusCode == 200) {
-      print(response.body);
+
       await Future.delayed(const Duration(seconds: 3));
 
         homes = AnnouncementList.fromJson(jsonDecode(response.body));
