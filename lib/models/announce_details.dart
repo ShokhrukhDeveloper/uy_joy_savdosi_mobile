@@ -78,8 +78,8 @@ class Details {
    isNewBuilding : json['isNewBuilding'],
    contactId : json['contactId'],
    contact : json['contact'],
-     announceApartementHas: json['announceApartementHas'].map<AnnounceInfo>((v)=>AnnounceInfo.fromJson(v)).TtoList(),
-     announceNearby: json['announceNearby'].map<AnnounceInfo>((v)=>AnnounceInfo.fromJson(v)).TtoList(),
+     announceApartementHas: json['announceApartementHas'].map<AnnounceInfo>((v)=>AnnounceInfo.fromJson(v)).toList(),
+     announceNearby: json['announceNearby'].map<AnnounceInfo>((v)=>AnnounceInfo.fromJson(v)).toList(),
 
    );
  }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:navoiy_uy_joy/models/announce_details.dart';
 import 'package:navoiy_uy_joy/urls/Urls.dart';
 import 'package:navoiy_uy_joy/view/product/widgets/image_viewer.dart';
 import 'package:http/http.dart' as http;
@@ -15,17 +16,14 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   bool loading=true;
-  Map<dynamic,dynamic> data={};
+  AnnounceDetails? data;
   List<String> images=[];
   Future<void> getDataById(int id)async
   {
     var response = await http.get(Uri.parse("${Urls.announce}/$id"));
     if(response.statusCode==200){
-      data = jsonDecode(response.body)["data"];
+      data = AnnounceDetails.fromJson(jsonDecode(response.body));
 
-      print(data["images"].runtimeType);
-      print("------------------------");
-      images=data["images"].map<String>((e) => e.toString()).toList();
 
 
       await Future.delayed(const Duration(seconds: 1));
@@ -77,28 +75,28 @@ class _ProductPageState extends State<ProductPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text("Kecha 17:48 da"),
-                        Text("${data["title"]}",
+                        Text("${data?.details.title}",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500
                         ),
                         ),
-                        Text("${data["price"]} so'm",
+                        Text("${data?.details.price} so'm",
                         style: TextStyle(fontSize: 24,fontWeight: FontWeight.w900),
                         ),
                         Text("ID: ${widget.id}",
                         style: TextStyle(fontSize: 24,fontWeight: FontWeight.w900),
                         ),
                         details("Turar joy", "Yangi qurilgan uylar"),
-                        details("Xonalar soni", "${data["roomQuantity"]}"),
-                        details("Yashash maydoni", "${data["square"]} kv"),
-                        details("Qavatliligi", "${data["maxFloor"]} kv"),
-                        details("Oshxona maydoni", "${data["kitchenSquare"]} kv"),
-                        details("Qurilgan yili", "${data["year"]} kv"),
-                        details("Remonti", "${data["repair"]}"),
-                        details("Blandligi", "${data["height"]} m"),
-                        details("Kvartirada bor", "${data["flatHasThings"]} m"),
-                        details("Yaqainiada yoylashgan", "${data["description"]}"),
+                        details("Xonalar soni", "${data?.details.numberOfRooms}"),
+                        details("Yashash maydoni", "${data?.details.livingSpace} m\u00b2"),
+                        details("Qavatliligi", "${data?.details.numberOfStoreys} "),
+                        details("Oshxona maydoni", "${data?.details.kitchenSpace} m\u00b2"),
+                        details("Qurilgan yili", "${data?.details.year} - yili"),
+                        details("Remonti", "Soo on"),
+                        details("Blandligi", "${data?.details.ceilingHeight} m"),
+                        details("Kvartirada bor", "${data?.details.announceApartementHas.map((e) => "${e.uz} ,").toString()} m"),
+                        details("Yaqainiada yoylashgan", "${data?.details.announceNearby.map((e) => "${e.uz} ,").toString()} "),
                       
                       ],
                     ),
