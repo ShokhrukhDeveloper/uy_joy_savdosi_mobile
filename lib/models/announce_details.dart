@@ -38,7 +38,7 @@ class Details {
       this.kitchenSpace, 
       this.year, 
       this.ceilingHeight, 
-      this.maklerPrice, 
+      required this.maklerPrice,
       this.isFurnished, 
       this.isNegotiable, 
       this.isNewBuilding, 
@@ -105,7 +105,7 @@ class Details {
   num? kitchenSpace;
   num? year;
   num?  ceilingHeight;
-  bool? maklerPrice;
+  bool maklerPrice;
   bool? isFurnished;
   bool? isNegotiable;
   bool? isNewBuilding;
