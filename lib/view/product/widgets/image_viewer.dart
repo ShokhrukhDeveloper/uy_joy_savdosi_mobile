@@ -31,7 +31,7 @@ class _ImageViewerState extends State<ImageViewer> {
                       },
                     itemBuilder: (BuildContext context, int index) {
                         return InkWell(
-                          onTap: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (c)=>ImageShower(url: "http://liber.uz/files/${widget.imgList[index]}"))),
+                          onTap: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (c)=>ImageShower(url: "${Urls.baseImageUrl}/${widget.imgList[index]}"))),
                           child: Image(
                             image: NetworkImage("${Urls.baseImageUrl}/${widget.imgList[index]}"),
                             fit: BoxFit.cover,),

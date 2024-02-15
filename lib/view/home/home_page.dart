@@ -1,6 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:navoiy_uy_joy/urls/Urls.dart';
@@ -20,25 +19,65 @@ class _HomePageState extends State<HomePage> {
   bool isSearch = false;
   bool last=false;
   bool loading = false;
-  static const limit = 10;
+  static const limit = 5;
   int page = 1;
-  Future<void> getData(int page) async {
-    loading = true;
+  Future<void> getData({required int page,bool pageNation=false}) async {
+
     setState(() {});
     var response = await http.get(Uri.parse("${Urls.announce}?Limit=$limit&Page=$page"));
-    print(response.statusCode);
+    if (kDebugMode) {
+      print(response.statusCode);
+    }
     print(response.body);
     if (response.statusCode == 200) {
       await Future.delayed(const Duration(seconds: 3));
-
+      if(pageNation){
+        var lis = AnnouncementList.fromJson(jsonDecode(response.body));
+        if(lis.announcement.isNotEmpty) {
+          homes?.announcement.addAll(lis.announcement);
+        }else{
+          last=true;
+        }
+      }
+      else{
         homes = AnnouncementList.fromJson(jsonDecode(response.body));
+      }
+
       setState(() {
         loading = false;
       });
     }
   }
-  late ScrollController _scrollController;
 
+  Future<void> getDataFromSearch({required String text,bool pageNation=false}) async {
+
+    setState(() {});
+    var response = await http.get(Uri.parse("${Urls.announceSearch}/?text=$text&Limit=$limit&Page=$page"));
+    if (kDebugMode) {
+      print(response.statusCode);
+    }
+    print(response.body);
+    if (response.statusCode == 200) {
+      await Future.delayed(const Duration(seconds: 3));
+      if(pageNation){
+        var lis = AnnouncementList.fromJson(jsonDecode(response.body));
+        if(lis.announcement.isNotEmpty) {
+          homes?.announcement.addAll(lis.announcement);
+        }else{
+          last=true;
+        }
+      }
+      else{
+        homes = AnnouncementList.fromJson(jsonDecode(response.body));
+      }
+
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+  final TextEditingController controllerSearch=TextEditingController();
+  late ScrollController _scrollController;
   @override
   void initState() {
     _scrollController=ScrollController();
@@ -46,11 +85,18 @@ class _HomePageState extends State<HomePage> {
       if(_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent){
         page++;
-        if(!last)getData(page);
+        if(!last){
+          if(!isSearch) {
+            getData(page: page,pageNation: true);
+          } else {
+            getDataFromSearch(text: controllerSearch.text);
+          }
+
+        }
       }
     });
-
-    getData(1);
+    loading = true;
+    getData(page: 1);
     super.initState();
   }
 
@@ -65,7 +111,13 @@ class _HomePageState extends State<HomePage> {
         title: !isSearch
             ? const Text("Navoiy uy joy")
             : TextField(
-                onSubmitted: (text) {},
+          controller: controllerSearch,
+                onSubmitted: (text) {
+                  loading=true;
+                  page=1;
+                  last=false;
+                  getDataFromSearch(text: text);
+                },
                 decoration: InputDecoration(
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 0, horizontal: 15.0),
